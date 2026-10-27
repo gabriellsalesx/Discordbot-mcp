@@ -370,6 +370,32 @@ func TestSetPermissionsMergesAndSyncsChildren(t *testing.T) {
 	}
 }
 
+func TestHidingFromEveryoneKeepsTheBotFirst(t *testing.T) {
+	cs, fake := connect(t)
+	out := call(t, cs, "set_channel_permissions", map[string]any{"channel": "Comunidade", "target": "everyone", "deny": []string{"view_channel"}})
+	if kept := out["bot_kept_access"]; kept == nil {
+		t.Fatalf("the bot should keep its access: %v", out)
+	}
+	// Once @everyone is denied, the bot cannot see the channel to add its
+	// own override, so that write must come first.
+	botAt, everyoneAt := -1, -1
+	for i, c := range fake.calls {
+		switch c {
+		case "PUT /channels/" + catID + "/permissions/" + botID:
+			if botAt < 0 {
+				botAt = i
+			}
+		case "PUT /channels/" + catID + "/permissions/" + gid:
+			if everyoneAt < 0 {
+				everyoneAt = i
+			}
+		}
+	}
+	if botAt < 0 || everyoneAt < 0 || botAt > everyoneAt {
+		t.Errorf("bot override at %d, @everyone at %d in %v", botAt, everyoneAt, fake.calls)
+	}
+}
+
 func TestDeleteNeedsConfirm(t *testing.T) {
 	cs, fake := connect(t)
 	out := call(t, cs, "delete_channel", map[string]any{"channel": "regras"})

@@ -104,6 +104,16 @@ func (s *Server) setChannelPermissions(ctx context.Context, _ *mcp.CallToolReque
 
 	var updated []string
 	for _, c := range targets {
+		// The bot's override goes first: once @everyone is denied, the bot
+		// can no longer see the channel to add it.
+		if keep != 0 {
+			o, _ := findOverwrite(c.Overwrites, bot.User.ID)
+			o.ID, o.Type = bot.User.ID, discord.OverwriteMember
+			o.Allow, o.Deny = o.Allow|keep, o.Deny&^keep
+			if err := sc.c.SetOverwrite(ctx, c.ID, o, in.Reason); err != nil {
+				return nil, nil, fmt.Errorf("could not keep the bot's own access to %s, so nothing was changed there: %w", c.Name, err)
+			}
+		}
 		if after.Allow == 0 && after.Deny == 0 {
 			err = sc.c.DeleteOverwrite(ctx, c.ID, t.ID, in.Reason)
 		} else {
@@ -114,14 +124,6 @@ func (s *Server) setChannelPermissions(ctx context.Context, _ *mcp.CallToolReque
 				return nil, nil, err
 			}
 			return nil, nil, fmt.Errorf("updated %s but not the synced channel %s: %w", ch.Name, c.Name, err)
-		}
-		if keep != 0 {
-			o, _ := findOverwrite(c.Overwrites, bot.User.ID)
-			o.ID, o.Type = bot.User.ID, discord.OverwriteMember
-			o.Allow, o.Deny = o.Allow|keep, o.Deny&^keep
-			if err := sc.c.SetOverwrite(ctx, c.ID, o, in.Reason); err != nil {
-				return nil, nil, fmt.Errorf("changed %s, but could not keep the bot's own access: %w", c.Name, err)
-			}
 		}
 		if c != ch {
 			updated = append(updated, c.Name)
