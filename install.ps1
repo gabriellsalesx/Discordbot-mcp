@@ -1,11 +1,11 @@
 # Installs the latest discord-mcp release for Windows.
 #
-#   irm https://raw.githubusercontent.com/gabriellsalesx/discord-mcp/main/install.ps1 | iex
+#   irm https://raw.githubusercontent.com/gabriellsalesx/Discordbot-mcp/main/install.ps1 | iex
 #
 # Set $env:INSTALL_DIR to choose the folder and $env:VERSION to pin a release.
 $ErrorActionPreference = 'Stop'
 
-$repo = 'gabriellsalesx/discord-mcp'
+$repo = 'gabriellsalesx/Discordbot-mcp'
 $dir = if ($env:INSTALL_DIR) { $env:INSTALL_DIR } else { Join-Path $env:LOCALAPPDATA 'Programs\discord-mcp' }
 $arch = if ([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture -eq 'Arm64') { 'arm64' } else { 'amd64' }
 $base = if ($env:VERSION) { "https://github.com/$repo/releases/download/$($env:VERSION)" } else { "https://github.com/$repo/releases/latest/download" }

@@ -15,7 +15,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gabriellsalesx/discord-mcp/internal/auth"
+	"github.com/gabriellsalesx/Discordbot-mcp/internal/auth"
 )
 
 // Layout is a saved server structure. Permissions are by name and targets

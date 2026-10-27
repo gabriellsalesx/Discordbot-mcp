@@ -18,14 +18,14 @@ Escolha um caminho. Nenhum deles exige Go.
 npx -y @gabriellsales/discord-mcp login
 ```
 
-**Sem Node, com o script de instalação.** Baixa o binário do [GitHub Releases](https://github.com/gabriellsalesx/discord-mcp/releases), confere o checksum e instala em `~/.local/bin` (Linux e macOS) ou em `%LOCALAPPDATA%\Programs\discord-mcp` (Windows):
+**Sem Node, com o script de instalação.** Baixa o binário do [GitHub Releases](https://github.com/gabriellsalesx/Discordbot-mcp/releases), confere o checksum e instala em `~/.local/bin` (Linux e macOS) ou em `%LOCALAPPDATA%\Programs\discord-mcp` (Windows):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/gabriellsalesx/discord-mcp/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/gabriellsalesx/Discordbot-mcp/main/install.sh | sh
 ```
 
 ```powershell
-irm https://raw.githubusercontent.com/gabriellsalesx/discord-mcp/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/gabriellsalesx/Discordbot-mcp/main/install.ps1 | iex
 ```
 
 Depois, `discord-mcp login`.
@@ -34,7 +34,7 @@ Depois, `discord-mcp login`.
 
 ```bash
 npm install -g @gabriellsales/discord-mcp                  # ou: pnpm add -g @gabriellsales/discord-mcp
-go install github.com/gabriellsalesx/discord-mcp@latest    # com Go 1.26+
+go install github.com/gabriellsalesx/Discordbot-mcp@latest    # com Go 1.26+
 ```
 
 ## Login

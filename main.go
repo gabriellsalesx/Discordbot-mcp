@@ -16,7 +16,7 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	"github.com/gabriellsalesx/discord-mcp/internal/server"
+	"github.com/gabriellsalesx/Discordbot-mcp/internal/server"
 )
 
 // version is set by the release build with -ldflags "-X main.version=...".

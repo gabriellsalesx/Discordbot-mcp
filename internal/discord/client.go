@@ -55,7 +55,7 @@ type Options struct {
 // New returns a Client for a bot token.
 func New(opt Options) *Client {
 	if opt.UserAgent == "" {
-		opt.UserAgent = "DiscordBot (https://github.com/gabriellsalesx/discord-mcp, dev)"
+		opt.UserAgent = "DiscordBot (https://github.com/gabriellsalesx/Discordbot-mcp, dev)"
 	}
 	if opt.Timeout == 0 {
 		opt.Timeout = 30 * time.Second
@@ -77,7 +77,7 @@ func New(opt Options) *Client {
 
 // UserAgent formats the User-Agent Discord asks bots to send.
 func UserAgent(version string) string {
-	return "DiscordBot (https://github.com/gabriellsalesx/discord-mcp, " + version + ")"
+	return "DiscordBot (https://github.com/gabriellsalesx/Discordbot-mcp, " + version + ")"
 }
 
 // Error is a non-2xx answer from Discord.

@@ -15,9 +15,9 @@ import (
 
 	"golang.org/x/term"
 
-	"github.com/gabriellsalesx/discord-mcp/internal/auth"
-	"github.com/gabriellsalesx/discord-mcp/internal/discord"
-	"github.com/gabriellsalesx/discord-mcp/internal/server"
+	"github.com/gabriellsalesx/Discordbot-mcp/internal/auth"
+	"github.com/gabriellsalesx/Discordbot-mcp/internal/discord"
+	"github.com/gabriellsalesx/Discordbot-mcp/internal/server"
 )
 
 const portalURL = "https://discord.com/developers/applications"

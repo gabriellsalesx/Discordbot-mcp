@@ -14,7 +14,7 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	"github.com/gabriellsalesx/discord-mcp/internal/discord"
+	"github.com/gabriellsalesx/Discordbot-mcp/internal/discord"
 )
 
 const (

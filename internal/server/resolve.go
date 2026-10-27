@@ -7,7 +7,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/gabriellsalesx/discord-mcp/internal/discord"
+	"github.com/gabriellsalesx/Discordbot-mcp/internal/discord"
 )
 
 // scope is the server a tool call works on, with what it has loaded so far.

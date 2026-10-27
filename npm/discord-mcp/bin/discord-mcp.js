@@ -14,7 +14,7 @@ try {
   console.error(
     `discord-mcp: no binary for ${process.platform}-${process.arch}.\n` +
       `Reinstall without --no-optional / --omit=optional, or download it from\n` +
-      `https://github.com/gabriellsalesx/discord-mcp/releases`
+      `https://github.com/gabriellsalesx/Discordbot-mcp/releases`
   );
   process.exit(1);
 }

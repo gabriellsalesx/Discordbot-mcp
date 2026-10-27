@@ -1,4 +1,4 @@
-module github.com/gabriellsalesx/discord-mcp
+module github.com/gabriellsalesx/Discordbot-mcp
 
 go 1.26.0
 

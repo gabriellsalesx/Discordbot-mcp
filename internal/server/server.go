@@ -15,8 +15,8 @@ import (
 	"github.com/google/jsonschema-go/jsonschema"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	"github.com/gabriellsalesx/discord-mcp/internal/auth"
-	"github.com/gabriellsalesx/discord-mcp/internal/discord"
+	"github.com/gabriellsalesx/Discordbot-mcp/internal/auth"
+	"github.com/gabriellsalesx/Discordbot-mcp/internal/discord"
 )
 
 const instructions = `Manage Discord servers through the user's bot: channels, categories, roles, permissions and member roles. Servers, channels, roles and members can be named instead of using ids. Call list_channels and list_roles before reorganizing. delete_channel, delete_role and send_message call first without confirm to get a preview, show it to the user, and repeat with confirm=true only after they agree.`
@@ -51,7 +51,7 @@ func New(cfg Config) *mcp.Server {
 		Name:       "discord-mcp",
 		Title:      "Discord",
 		Version:    cfg.Version,
-		WebsiteURL: "https://github.com/gabriellsalesx/discord-mcp",
+		WebsiteURL: "https://github.com/gabriellsalesx/Discordbot-mcp",
 	}, &mcp.ServerOptions{Instructions: instructions, Logger: cfg.Logger})
 	s.register(ms)
 	ms.AddReceivingMiddleware(stringIDs)

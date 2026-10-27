@@ -1,13 +1,13 @@
 #!/bin/sh
 # Installs the latest discord-mcp release for Linux or macOS.
 #
-#   curl -fsSL https://raw.githubusercontent.com/gabriellsalesx/discord-mcp/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/gabriellsalesx/Discordbot-mcp/main/install.sh | sh
 #
 # Set INSTALL_DIR to choose where the binary goes (default: ~/.local/bin)
 # and VERSION to pin a release (e.g. v0.1.0).
 set -eu
 
-repo="gabriellsalesx/discord-mcp"
+repo="gabriellsalesx/Discordbot-mcp"
 install_dir="${INSTALL_DIR:-$HOME/.local/bin}"
 
 case "$(uname -s)" in

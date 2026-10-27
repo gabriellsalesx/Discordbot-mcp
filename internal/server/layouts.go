@@ -10,8 +10,8 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	"github.com/gabriellsalesx/discord-mcp/internal/discord"
-	"github.com/gabriellsalesx/discord-mcp/internal/layout"
+	"github.com/gabriellsalesx/Discordbot-mcp/internal/discord"
+	"github.com/gabriellsalesx/Discordbot-mcp/internal/layout"
 )
 
 type saveLayoutIn struct {
