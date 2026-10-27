@@ -1,24 +1,24 @@
 # discord-mcp
 
-Servidor MCP para gerenciar servidores do Discord, escrito em Go. É um binário único, sem Python ou Node embutido, e funciona em qualquer cliente MCP via stdio: Claude Code, Codex, OpenCode, Gemini CLI, Cursor, Claude Desktop e outros.
+An MCP server for managing Discord servers, written in Go. It is a single binary, with no Python or Node runtime inside, and works in any MCP client over stdio: Claude Code, Codex, OpenCode, Gemini CLI, Cursor, Claude Desktop and others.
 
-Com ele você pede ao seu agente para montar e organizar um servidor: criar categorias e canais, deixar canais privados, criar cargos com cores e permissões, ajustar as permissões de cada canal por cargo ou membro, reordenar tudo e conferir quem pode fazer o quê.
+Ask your agent to build and tidy up a server: create categories and channels, make channels private, create roles with colors and permissions, tune each channel's permissions per role or member, reorder everything, and check who can do what.
 
-> Projeto não oficial, sem afiliação com a Discord Inc. Ele usa a API oficial do Discord através de um bot seu.
+> Unofficial project, not affiliated with Discord Inc. It uses the official Discord API through a bot you own.
 
-[English version](README.en.md)
+[Versão em português](README.pt-BR.md)
 
-## Instalação
+## Install
 
-Escolha um caminho. Nenhum deles exige Go.
+Pick one. None of them needs Go.
 
-**Com Node.js (npx), sem instalar nada.** O primeiro uso baixa o binário certo para o seu sistema:
+**With Node.js (npx), nothing to install.** The first run downloads the right binary for your system:
 
 ```bash
 npx -y @gabriellsales/discord-mcp login
 ```
 
-**Sem Node, com o script de instalação.** Baixa o binário do [GitHub Releases](https://github.com/gabriellsalesx/Discordbot-mcp/releases), confere o checksum e instala em `~/.local/bin` (Linux e macOS) ou em `%LOCALAPPDATA%\Programs\discord-mcp` (Windows):
+**Without Node, with the install script.** Downloads the binary from [GitHub Releases](https://github.com/gabriellsalesx/Discordbot-mcp/releases), verifies the checksum and installs to `~/.local/bin` (Linux and macOS) or `%LOCALAPPDATA%\Programs\discord-mcp` (Windows):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/gabriellsalesx/Discordbot-mcp/main/install.sh | sh
@@ -28,50 +28,50 @@ curl -fsSL https://raw.githubusercontent.com/gabriellsalesx/Discordbot-mcp/main/
 irm https://raw.githubusercontent.com/gabriellsalesx/Discordbot-mcp/main/install.ps1 | iex
 ```
 
-Depois, `discord-mcp login`.
+Then run `discord-mcp login`.
 
-**Outras formas:**
+**Other ways:**
 
 ```bash
-npm install -g @gabriellsales/discord-mcp                  # ou: pnpm add -g @gabriellsales/discord-mcp
-go install github.com/gabriellsalesx/Discordbot-mcp@latest    # com Go 1.26+
+npm install -g @gabriellsales/discord-mcp                  # or: pnpm add -g @gabriellsales/discord-mcp
+go install github.com/gabriellsalesx/Discordbot-mcp@latest    # with Go 1.26+
 ```
 
 ## Login
 
-O Discord só permite que ferramentas ajam no servidor através de um bot. Usar o token da sua conta pessoal viola os termos do Discord e pode banir a conta, então o `discord-mcp` não aceita esse caminho. Criar o bot leva um minuto, e o `login` guia cada passo:
+Discord only lets tools act on a server through a bot. Using your personal account token breaks Discord's terms and can get the account banned, so `discord-mcp` refuses it. Creating the bot takes a minute and `login` walks you through it:
 
 ```bash
 npx -y @gabriellsales/discord-mcp login
 ```
 
-1. O Developer Portal abre no navegador. Clique em **New Application**, dê um nome (por exemplo "Gerente do Servidor") e crie.
-2. Na aba **Bot**, clique em **Reset Token** e depois em **Copy**.
-3. Cole o token no terminal (a digitação fica oculta). O `login` confere o token e salva.
-4. O link de convite abre sozinho. Escolha o servidor, clique em **Authorize** e o terminal avisa quando o bot entrar.
+1. The Developer Portal opens in your browser. Click **New Application**, name it (for example "Server Manager") and create it.
+2. On the **Bot** tab, click **Reset Token**, then **Copy**.
+3. Paste the token in the terminal (input is hidden). `login` checks it and saves it.
+4. The invite link opens by itself. Pick the server, click **Authorize**, and the terminal tells you when the bot has joined.
 
-Opcional: na mesma aba **Bot**, ligue **Server Members Intent** para buscar membros pelo nome (`find_members` e `set_member_roles` com nome). Sem isso, essas ferramentas funcionam passando o id do usuário.
+Optional: on the same **Bot** tab, turn on **Server Members Intent** to look members up by name (`find_members`, and `set_member_roles` with a name). Without it, those tools work with user ids.
 
-Depois que o bot entrar, vá em **Configurações do servidor > Cargos** e arraste o cargo do bot para cima dos cargos que ele vai gerenciar. O Discord só deixa um bot editar cargos abaixo do cargo mais alto dele.
+Once the bot is in, open **Server Settings > Roles** and drag the bot's role above the roles it should manage. Discord only lets a bot edit roles below its own highest role.
 
-O token fica em `~/.config/discord-mcp/credentials.json` (Linux), com permissão `600`. Outros comandos:
+The token is stored in `~/.config/discord-mcp/credentials.json` (Linux) with mode `600`. Other commands:
 
 ```bash
-discord-mcp invite          # adiciona o bot a outro servidor
-discord-mcp invite --admin  # convite pedindo Administrador
-discord-mcp status          # bot, servidores e se o Server Members Intent está ligado
-discord-mcp logout          # apaga o token salvo
+discord-mcp invite          # add the bot to another server
+discord-mcp invite --admin  # invite asking for Administrator
+discord-mcp status          # bot, servers, and whether Server Members Intent is on
+discord-mcp logout          # delete the stored token
 ```
 
-Em CI ou contêiner, pule o login e passe o token por variável: `DISCORD_TOKEN=...`. Também dá para mandar o token por pipe: `pass show discord-bot | discord-mcp login`.
+In CI or containers, skip login and pass the token in the environment: `DISCORD_TOKEN=...`. You can also pipe it: `pass show discord-bot | discord-mcp login`.
 
-### Que permissões o bot pede
+### Which permissions the bot asks for
 
-Por padrão o convite pede todas as permissões, exceto Administrador. Parece muito, mas é uma regra do Discord: um bot só consegue liberar ou negar num canal, ou dar a um cargo, as permissões que ele mesmo tem. Se você prefere, `discord-mcp invite --admin` pede só Administrador. As duas formas dão o mesmo resultado prático; a diferença é que, com a lista, você pode desmarcar o que não quiser na tela de autorização.
+By default the invite asks for every permission except Administrator. That looks like a lot, but it is a Discord rule: a bot can only allow or deny in a channel, or grant to a role, the permissions it has itself. If you prefer, `discord-mcp invite --admin` asks for Administrator alone. Both work the same in practice; with the list you can untick what you do not want on the authorization screen.
 
-## Configuração nos clientes
+## Client setup
 
-Os exemplos usam `npx`, que funciona sem mexer no `PATH`. Se você instalou pelo script, pelo `npm -g` ou pelo `go install`, troque `npx -y @gabriellsales/discord-mcp` por `discord-mcp`. A variável `DISCORD_SERVER` é opcional: sem ela, vale o servidor escolhido no login, ou o único em que o bot estiver.
+The examples use `npx`, which works without touching `PATH`. If you installed with the script, `npm -g` or `go install`, replace `npx -y @gabriellsales/discord-mcp` with `discord-mcp`. `DISCORD_SERVER` is optional: without it, the server chosen at login is used, or the only one the bot is in.
 
 **Claude Code**
 
@@ -85,7 +85,7 @@ claude mcp add -s user discord -- npx -y @gabriellsales/discord-mcp
 [mcp_servers.discord]
 command = "npx"
 args = ["-y", "@gabriellsales/discord-mcp"]
-# Pede aprovação para tudo que não é somente leitura.
+# Ask for approval on anything that is not read-only.
 default_tools_approval_mode = "writes"
 ```
 
@@ -106,7 +106,7 @@ default_tools_approval_mode = "writes"
 gemini mcp add -s user discord npx -y @gabriellsales/discord-mcp
 ```
 
-**Cursor** (`~/.cursor/mcp.json`) e **Claude Desktop** (`claude_desktop_config.json`)
+**Cursor** (`~/.cursor/mcp.json`) and **Claude Desktop** (`claude_desktop_config.json`)
 
 ```json
 {
@@ -119,118 +119,118 @@ gemini mcp add -s user discord npx -y @gabriellsales/discord-mcp
 }
 ```
 
-No Windows, se o cliente não encontrar o `npx`, use `"command": "cmd"` e `"args": ["/c", "npx", "-y", "@gabriellsales/discord-mcp"]`.
+On Windows, if the client cannot find `npx`, use `"command": "cmd"` and `"args": ["/c", "npx", "-y", "@gabriellsales/discord-mcp"]`.
 
-Reinicie o cliente e peça algo como: *"crie uma categoria Projetos com os canais anúncios (só leitura para membros), chat e uma sala de voz, e um canal privado staff visível só para Moderador"*.
+Restart the client and try: *"create a Projects category with an announcements channel (read-only for members), a chat channel and a voice room, plus a private staff channel only Moderators can see"*.
 
-### Comandos
+### Commands
 
-| Comando | O que faz |
+| Command | What it does |
 | --- | --- |
-| `discord-mcp` | Roda o servidor MCP via stdio (é o que o cliente chama). |
-| `discord-mcp login` | Conecta o bot com o passo a passo e abre o convite. `--server` define o servidor padrão; `--admin` pede Administrador no convite; `--no-invite` não abre o convite. |
-| `discord-mcp invite` | Abre o convite para outro servidor e espera o bot entrar. `--admin` pede Administrador; `--print` só mostra o link. |
-| `discord-mcp status` | Mostra o bot, os servidores e o Server Members Intent. |
-| `discord-mcp logout` | Apaga o token salvo neste computador. |
-| `discord-mcp version` | Mostra a versão. |
+| `discord-mcp` | Runs the MCP server over stdio (what clients call). |
+| `discord-mcp login` | Connects the bot step by step and opens the invite. `--server` sets the default server; `--admin` asks for Administrator in the invite; `--no-invite` skips it. |
+| `discord-mcp invite` | Opens the invite for another server and waits for the bot to join. `--admin` asks for Administrator; `--print` only prints the link. |
+| `discord-mcp status` | Shows the bot, its servers and the Server Members Intent. |
+| `discord-mcp logout` | Deletes the token stored on this computer. |
+| `discord-mcp version` | Prints the version. |
 
-## Ferramentas
+## Tools
 
-| Ferramenta | O que faz |
+| Tool | What it does |
 | --- | --- |
-| `list_servers` | Servidores em que o bot está, com membros e o que ele pode gerenciar. |
-| `get_server` | Configurações do servidor, contagens e o cargo e as permissões do bot. |
-| `update_server` | Nome, descrição, nível de verificação, notificações, filtro de conteúdo, canais de sistema, regras e AFK, idioma. |
-| `list_channels` | Canais como na barra lateral: categorias em ordem, com tipo, tópico, se é privado e se está sincronizado com a categoria. |
-| `get_channel` | Um canal com todas as permissões por cargo ou membro. |
-| `create_channel` | Cria canal de texto, voz, anúncios, palco, fórum ou mídia, ou uma categoria. Pode nascer dentro de uma categoria e privado para cargos escolhidos. |
-| `update_channel` | Renomeia, muda tópico, modo lento, NSFW, voz e posição, move de categoria ou sincroniza com ela. |
-| `delete_channel` | Apaga canal ou categoria. Exige confirmação. |
-| `organize_channels` | Reordena canais ou categorias de uma vez e move canais para uma categoria. |
-| `list_roles` | Cargos do topo para baixo, com cor, membros, permissões e se o bot consegue gerenciar. |
-| `create_role` | Cria cargo com nome, cor, permissões e exibição separada. |
-| `update_role` | Altera cargo: nome, cor, permissões (substituir, somar ou tirar), exibição e posição. Também vale para `@everyone`. |
-| `delete_role` | Apaga um cargo. Exige confirmação. |
-| `set_channel_permissions` | Libera, nega ou volta ao padrão permissões de um cargo ou membro num canal ou categoria. Numa categoria, atualiza junto os canais sincronizados. |
-| `check_permissions` | Calcula o que um cargo ou membro realmente pode fazer, no servidor ou num canal. |
-| `invite_bot` | Gera o link para adicionar o bot a outro servidor (com o servidor já escolhido, se passar o id). |
-| `find_members` | Busca membros pelo começo do nome, com os cargos. |
-| `set_member_roles` | Dá ou tira cargos de um membro. |
-| `send_message` | Posta uma mensagem como o bot, por exemplo as regras num canal novo. Exige confirmação. |
-| `save_layout` | Salva a estrutura de um servidor como layout reutilizável. |
-| `list_layouts` | Lista os layouts salvos. |
-| `get_layout` | Mostra um layout inteiro. |
-| `apply_layout` | Monta um layout salvo em outro servidor. Exige confirmação. |
-| `delete_layout` | Apaga um layout salvo. |
+| `list_servers` | Servers the bot is in, with member counts and what it may manage. |
+| `get_server` | Server settings, counts, and the bot's role and permissions. |
+| `update_server` | Name, description, verification level, notifications, content filter, system/rules/AFK channels, locale. |
+| `list_channels` | Channels as the sidebar shows them: categories in order, with type, topic, private flag and whether each is synced with its category. |
+| `get_channel` | One channel with every permission override, per role or member. |
+| `create_channel` | Creates a text, voice, announcement, stage, forum or media channel, or a category. Can start inside a category and private to chosen roles. |
+| `update_channel` | Rename, topic, slowmode, NSFW, voice settings and position; move to a category or sync with it. |
+| `delete_channel` | Deletes a channel or category. Needs confirmation. |
+| `organize_channels` | Reorders channels or categories in one go and moves channels into a category. |
+| `list_roles` | Roles from the top, with color, members, permissions and whether the bot can manage each. |
+| `create_role` | Creates a role with name, color, permissions and hoisting. |
+| `update_role` | Changes a role: name, color, permissions (replace, add or remove), display and position. Works on `@everyone` too. |
+| `delete_role` | Deletes a role. Needs confirmation. |
+| `set_channel_permissions` | Allows, denies or resets permissions for a role or member in a channel or category. On a category, synced channels follow. |
+| `check_permissions` | Works out what a role or member can really do, server-wide or in a channel. |
+| `invite_bot` | Returns the link that adds the bot to another server (preselected when you pass its id). |
+| `find_members` | Finds members by the start of their name, with roles. |
+| `set_member_roles` | Gives or takes roles from a member. |
+| `send_message` | Posts a message as the bot, such as rules in a new channel. Needs confirmation. |
+| `save_layout` | Saves a server's structure as a reusable layout. |
+| `list_layouts` | Lists the saved layouts. |
+| `get_layout` | Shows a layout in full. |
+| `apply_layout` | Builds a saved layout in another server. Needs confirmation. |
+| `delete_layout` | Deletes a saved layout. |
 
-Servidores, canais, cargos e membros podem ser passados pelo nome (`#geral`, `@Moderador`, `everyone`) ou pelo id. Quando dois canais têm o mesmo nome, use `categoria/canal`. Toda ferramenta que altera algo aceita `reason`, que vai para o registro de auditoria do servidor.
+Servers, channels, roles and members can be given by name (`#general`, `@Moderator`, `everyone`) or id. When two channels share a name, use `category/channel`. Every tool that changes something takes an optional `reason`, written to the server's audit log.
 
-Permissões usam os nomes da API em qualquer formato: `view_channel`, `Send Messages`, `manage-roles`. Também valem os nomes do app, como `manage_server` e `timeout_members`.
+Permissions use the API names in any style: `view_channel`, `Send Messages`, `manage-roles`. The app's names such as `manage_server` and `timeout_members` work too.
 
-### Layouts: monte uma vez, replique em outros servidores
+### Layouts: build once, replicate everywhere
 
-Peça ao agente para montar a estrutura que você quer (cargos, categorias, canais, quem vê o quê). Quando gostar do resultado, peça para salvar: *"salve esse servidor como layout Comunidade padrão"*. Depois, em qualquer outro servidor onde o bot esteja: *"aplique o layout Comunidade padrão no servidor X"*.
+Ask the agent to build the structure you want (roles, categories, channels, who sees what). When you like it, ask to save it: *"save this server as layout Community base"*. Later, in any other server the bot is in: *"apply layout Community base to server X"*.
 
-O layout guarda:
-- os cargos, com nome, cor, permissões, ordem na hierarquia e as opções de exibição;
-- as permissões gerais de `@everyone`;
-- as categorias e os canais em ordem, com tipo, tópico, modo lento, NSFW e limite de voz;
-- as permissões de cada canal por cargo, e quais canais seguem a categoria.
+A layout keeps:
+- roles, with name, color, permissions, hierarchy order and display options;
+- the server-wide permissions of `@everyone`;
+- categories and channels in order, with type, topic, slowmode, NSFW and voice limit;
+- each channel's permissions per role, and which channels follow their category.
 
-Mensagens, membros e permissões dadas a pessoas específicas não entram no layout.
+Messages, members and permissions given to specific people are not saved.
 
-O `apply_layout` primeiro mostra o plano: o que será criado e o que já existe. Ele só age com a sua confirmação. Cargos e canais que já existem com o mesmo nome são aproveitados como estão, e o `apply_layout` nunca apaga nem altera nada. Assim, aplicar de novo num servidor onde faltam só algumas partes completa apenas o que falta. As permissões gerais de `@everyone` só são trocadas com `apply_everyone_permissions: true`. Se o bot não tiver alguma permissão para conceder, ela é pulada e aparece como aviso.
+`apply_layout` first shows the plan: what will be created and what already exists. It only acts after you confirm. Roles and channels that already exist with the same name are reused as they are, and `apply_layout` never deletes or changes anything. So applying again to a server that is missing only some parts fills in just what is missing. `@everyone`'s server-wide permissions are only replaced with `apply_everyone_permissions: true`. Permissions the bot cannot grant are skipped and listed as warnings.
 
-Os layouts ficam em `~/.config/discord-mcp/layouts/`, um arquivo JSON por layout. Dá para copiar, versionar no git ou mandar para outra pessoa.
+Layouts live in `~/.config/discord-mcp/layouts/`, one JSON file each. Copy them, keep them in git or share them.
 
-### Confirmação antes de apagar ou publicar
+### Confirmation before deleting or posting
 
-`delete_channel`, `delete_role`, `send_message` e `apply_layout` não agem na primeira chamada. Sem `confirm: true`, devolvem uma prévia (o que será apagado, quantos membros perdem o cargo, o texto da mensagem) e nada muda. O agente mostra a prévia, você aprova e ele chama de novo com `confirm: true`. As ferramentas também trazem as anotações MCP (`readOnlyHint`, `destructiveHint`), que clientes como Codex e Claude Code usam para pedir permissão.
+`delete_channel`, `delete_role`, `send_message` and `apply_layout` do nothing on the first call. Without `confirm: true` they return a preview (what will be deleted, how many members lose the role, the message text). The agent shows it, you approve, and it calls again with `confirm: true`. Tools also carry MCP annotations (`readOnlyHint`, `destructiveHint`) that clients such as Codex and Claude Code use to ask for permission.
 
-Mensagens não notificam ninguém por padrão: `@everyone` e menções aparecem no texto, mas só disparam aviso com `allow_mentions: true`.
+Messages notify nobody by default: `@everyone` and mentions render, but only ping with `allow_mentions: true`.
 
-## Variáveis de ambiente
+## Environment variables
 
-| Variável | Uso |
+| Variable | Use |
 | --- | --- |
-| `DISCORD_TOKEN` | Token do bot; tem prioridade sobre o login salvo. `DISCORD_BOT_TOKEN` também vale. |
-| `DISCORD_SERVER` | Servidor padrão (id ou nome). `DISCORD_GUILD_ID` também vale. |
-| `DISCORD_MCP_CONFIG_DIR` | Pasta do `credentials.json`. |
-| `DISCORD_DEBUG=1` | Loga as chamadas à API no stderr (sem o token). |
+| `DISCORD_TOKEN` | Bot token; overrides the stored login. `DISCORD_BOT_TOKEN` works too. |
+| `DISCORD_SERVER` | Default server (id or name). `DISCORD_GUILD_ID` works too. |
+| `DISCORD_MCP_CONFIG_DIR` | Folder for `credentials.json`. |
+| `DISCORD_DEBUG=1` | Logs API calls to stderr (never the token). |
 
-## Limitações conhecidas
+## Known limitations
 
-- O bot só gerencia cargos abaixo do cargo mais alto dele e só concede permissões que ele mesmo tem. Os erros do Discord vêm com essa dica.
-- Buscar membros pelo nome exige o Server Members Intent ligado no Developer Portal.
-- A partir de 16/11/2026, o Discord deixa de listar para o bot os canais que ele não consegue ver. Canais privados criados pelo `create_channel` já incluem o bot; para os outros, dê ao cargo do bot a permissão de ver o canal (ou use o convite com Administrador).
-- Tópicos de fórum, threads, eventos, emojis e moderação (banir, expulsar, castigo) ainda não fazem parte das ferramentas.
+- The bot can only manage roles below its highest role and grant permissions it has. Discord errors come back with that hint.
+- Looking members up by name needs the Server Members Intent turned on in the Developer Portal.
+- From November 16, 2026, Discord stops listing channels the bot cannot see. Private channels made with `create_channel` already include the bot; for others, give the bot's role View Channel there (or invite it with Administrator).
+- Forum posts, threads, events, emojis and moderation (ban, kick, timeout) are not covered yet.
 
-## Desenvolvimento
+## Development
 
 ```bash
 go test ./...
 go build -o discord-mcp .
 ```
 
-`internal/discord` é o cliente REST (API v10), com os limites de taxa por bucket e as permissões; `internal/server` registra as ferramentas MCP com o [SDK oficial em Go](https://github.com/modelcontextprotocol/go-sdk); `internal/auth` guarda o token.
+`internal/discord` is the REST client (API v10) with per-bucket rate limiting and the permission flags; `internal/server` registers the MCP tools with the [official Go SDK](https://github.com/modelcontextprotocol/go-sdk); `internal/auth` stores the token.
 
-### Publicar uma versão
+### Releasing
 
 ```bash
 git tag v0.1.0 && git push origin v0.1.0
 ```
 
-O workflow `release` compila os binários com o GoReleaser, cria o Release no GitHub com `checksums.txt` e publica no npm o pacote principal mais um pacote por plataforma (`npm/build.mjs` e `npm/publish.mjs`). O CI roda testes em Linux, macOS e Windows, `golangci-lint` e `govulncheck`. Para testar localmente: `node npm/build.mjs 0.1.0 && node npm/publish.mjs --dry-run`.
+The `release` workflow builds the binaries with GoReleaser, creates the GitHub Release with `checksums.txt`, and publishes the main npm package plus one package per platform (`npm/build.mjs` and `npm/publish.mjs`). CI runs tests on Linux, macOS and Windows, `golangci-lint` and `govulncheck`. To try locally: `node npm/build.mjs 0.1.0 && node npm/publish.mjs --dry-run`.
 
-## Autor
+## Author
 
-Criado e mantido por **Gabriell Sales**.
+Created and maintained by **Gabriell Sales**.
 
 - GitHub: [@gabriellsalesx](https://github.com/gabriellsalesx)
 - Substack: [GS Lab](https://gabriellsales.substack.com)
 
-Contribuições são bem-vindas: abra uma issue ou um pull request.
+Contributions are welcome: open an issue or a pull request.
 
-## Licença
+## License
 
-MIT. Veja [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
