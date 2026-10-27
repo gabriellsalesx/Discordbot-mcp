@@ -1,0 +1,6 @@
+/discord-mcp
+/discord-mcp.exe
+/dist/
+credentials.json
+.env
+/npm/dist/
